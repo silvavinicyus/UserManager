@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:user_crud/user/data/repositories/user_repository.dart';
+import 'package:user_crud/user/domain/usecases/create_user_usecase.dart';
+import 'package:user_crud/user/presentation/controllers/user_controller.dart';
 
 class CreateUserPage extends StatefulWidget {
-  const CreateUserPage({super.key});
+  final void Function(int index) onTabTapped;
+  const CreateUserPage({super.key, required this.onTabTapped});
 
   @override
   State<CreateUserPage> createState() => _CreateUserPageState();
@@ -14,14 +18,23 @@ class _CreateUserPageState extends State<CreateUserPage> {
   TextEditingController passwordController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
 
+  late UserController controller;
+
+  @override
+  void initState() {
+    super.initState();
+
+    controller = UserController(
+      createUserUseCase: CreateUserUsecase(
+        userRepository: UserRepository.instance,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Criação de usuários'),
-        centerTitle: true,
-      ),
-      body: Padding(
+    return SingleChildScrollView(
+      child: Padding(
         padding: const EdgeInsets.all(30),
         child: Column(children: [
           TextField(
@@ -81,34 +94,39 @@ class _CreateUserPageState extends State<CreateUserPage> {
                   ),
                 ),
                 onPressed: () {
-                  print('Novo usuário: ');
-                  print(nameController.text);
-                  print(emailController.text);
-                  print(phoneController.text);
-                  print(userController.text);
-                  print(passwordController.text);
+                  controller.createUser(
+                    fullName: nameController.text,
+                    email: emailController.text,
+                    phone: phoneController.text,
+                    user: userController.text,
+                    password: passwordController.text,
+                  );
+                  clearInputs();
+                  widget.onTabTapped(1);
                 },
               ),
               TextButton(
+                onPressed: clearInputs,
                 child: const Text(
                   'Cancelar',
                   style: TextStyle(
                     fontSize: 20,
                   ),
                 ),
-                onPressed: () {
-                  passwordController.clear();
-                  nameController.clear();
-                  emailController.clear();
-                  phoneController.clear();
-                  userController.clear();
-                  passwordController.clear();
-                },
               )
             ],
           )
         ]),
       ),
     );
+  }
+
+  void clearInputs() {
+    passwordController.clear();
+    nameController.clear();
+    emailController.clear();
+    phoneController.clear();
+    userController.clear();
+    passwordController.clear();
   }
 }

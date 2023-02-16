@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:user_crud/user/presentation/pages/create_user.dart';
+import 'package:user_crud/user/presentation/pages/main_page.dart';
 
 void main() {
   runApp(const MainApp());
@@ -10,8 +10,6 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: CreateUserPage()
-    );
+    return const MaterialApp(home: MainPage());
   }
 }
